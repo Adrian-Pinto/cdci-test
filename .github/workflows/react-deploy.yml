@@ -1,0 +1,31 @@
+name: Deploy React App
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+
+      - name: Install Node.js and pnpm
+        uses: pnpm/setup-pnpm@v2
+        with:
+          version: 'latest'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build the React app
+        run: pnpm run build
+
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@4.1.1
+        with:
+          branch: gh-pages      # The branch where the built app will be deployed
+          folder: dist         # The directory containing the built app (change 'build' to 'dist')
