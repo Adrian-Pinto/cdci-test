@@ -13,10 +13,13 @@ jobs:
       - name: Checkout the repository
         uses: actions/checkout@v2
 
-      - name: Install Node.js and pnpm
-        uses: pnpm/setup-pnpm@v2
+      - name: Install Node.js
+        uses: actions/setup-node@v2
         with:
-          version: 'latest'
+          node-version: '14'
+
+      - name: Install pnpm
+        run: npm install -g pnpm
 
       - name: Install dependencies
         run: pnpm install
@@ -27,5 +30,5 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@4.1.1
         with:
-          branch: gh-pages      # The branch where the built app will be deployed
-          folder: dist         # The directory containing the built app (change 'build' to 'dist')
+          branch: gh-pages
+          folder: dist     
