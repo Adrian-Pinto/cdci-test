@@ -45,14 +45,30 @@ jobs:
       - name: Push changes to the temporary branch
         run: git push origin temp-branch
 
-      - name: Create the pull request
-        uses: peter-evans/create-pull-request@v5
+      - name: Create Pull Request
+        id: create_pr
+        run: |
+          PR_URL=$(curl -X POST \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -d '{"title": "Automated Pull Request", "head": "${{ github.repository_owner }}:temp-branch", "base": "${{ github.event.pull_request.head.ref }}", "body": "This is an automated pull request created by GitHub Actions."}' \
+            https://api.github.com/repos/${{ github.repository_owner }}/${{ github.repository#*/ }}/pulls | jq -r '.html_url')
+
+          echo "::set-output name=pr_url::$PR_URL"
+
+      - name: Wait for Pull Request Checks
+        uses: softprops/action-gh-wait@v1
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          branch: temp-branch
-          title: "Remove file_to_remove.txt"
-          body: "This pull request removes file_to_remove.txt from the master branch."
-          labels: "automerge"
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          check_name: "Continuous Integration"  # Replace with the name of your CI check
+
+      - name: Merge Pull Request
+        if: steps.create_pr.outputs.pr_url != ''
+        run: |
+          PR_NUMBER=$(echo ${{ steps.create_pr.outputs.pr_url }} | awk -F '/' '{print $NF}')
+          echo "Merging Pull Request $PR_NUMBER"
+          curl -X PUT \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            https://api.github.com/repos/${{ github.repository_owner }}/${{ github.repository#*/ }}/pulls/$PR_NUMBER/merge
 
       - name: Wait for the pull request to be merged
         run: |
