@@ -50,7 +50,7 @@ jobs:
         uses: peter-evans/create-pull-request@v5
       
       - name: Check outputs
-        if: ${{ steps.cpr.outputs.pull-request-number }}
         run: |
+          echo "${{ steps.cpr.outputs }}"
           echo "Pull Request Number - ${{ steps.cpr.outputs.pull-request-number }}"
           echo "Pull Request URL - ${{ steps.cpr.outputs.pull-request-url }}"
