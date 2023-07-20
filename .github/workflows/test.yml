@@ -63,8 +63,7 @@ jobs:
           sleep 15 # Wait for 10 seconds to give GitHub time to process the pull request
 
       - name: Merge Pull Request
-        if: steps.create_pr.outputs.pr_url != ''
-        if: steps.create_pr.outputs.pr_url == null
+        if: steps.create_pr.outputs.pr_url != '' && steps.create_pr.outputs.pr_url != null
         run: |
           PR_NUMBER=$(echo ${{ steps.create_pr.outputs.pr_url }} | awk -F '/' '{print $NF}')
           echo "Merging Pull Request $PR_NUMBER"
