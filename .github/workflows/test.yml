@@ -2,7 +2,9 @@ name: Remove File on Pull Request
 
 on:
   pull_request:
-    types: [closed]
+    - closed
+  branches:
+    - main
 
 jobs:
   remove_file:
