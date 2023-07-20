@@ -23,6 +23,9 @@ jobs:
             exit 0
           fi
 
+      - name: Fetch the 'develop' branch reference
+        run: git fetch origin develop:refs/remotes/origin/develop
+
       - name: Checkout the repository
         uses: actions/checkout@v3
 
