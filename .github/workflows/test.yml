@@ -29,11 +29,12 @@ jobs:
           repository: ${{ github.repository }}
 
       - name: Fetch the 'develop' branch reference
-        run: git fetch origin develop:refs/remotes/origin/develop
+        run: git fetch origin develop:refs/remotes/origin/${{ github.event.pull_request.head.ref }}
 
       - name: Create a temporary branch for the pull request
         run: |
-          git checkout -b temp-branch ${{ github.event.pull_request.head.ref }}
+          git checkout ${{ github.event.pull_request.head.ref }}
+          git checkout -b temp-branch 
 
       - name: Remove the file
         run: |
