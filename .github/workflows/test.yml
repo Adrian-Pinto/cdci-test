@@ -21,8 +21,8 @@ jobs:
         with:
           repository: ${{ github.repository }}
 
-      - name: Fetch the 'develop' branch reference
-        run: git fetch origin develop:refs/remotes/origin/master
+      - name: Fetch the 'main' branch reference
+        run: git fetch origin main:refs/remotes/origin/main
 
       - name: Remove the file
         run: |
@@ -30,4 +30,4 @@ jobs:
           git commit -m "Clear deploy file" --no-verify
 
       - name: Push changes to the temporary branch
-        run: git push origin master
+        run: git push origin main
