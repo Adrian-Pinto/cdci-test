@@ -51,7 +51,7 @@ jobs:
           PR_URL=$(curl -X POST \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             -d '{"title": "Automated Pull Request", "head": "${{ github.repository_owner }}:temp-branch", "base": "${{ github.event.pull_request.head.ref }}", "body": "This is an automated pull request created by GitHub Actions."}' \
-            https://api.github.com/repos/${{ github.repository_owner }}/${{ github.repository#*/ }}/pulls | jq -r '.html_url')
+            https://api.github.com/repos/${{ github.repository_owner }}/cdci-test/pulls | jq -r '.html_url')
 
           echo "::set-output name=pr_url::$PR_URL"
 
@@ -68,7 +68,7 @@ jobs:
           echo "Merging Pull Request $PR_NUMBER"
           curl -X PUT \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            https://api.github.com/repos/${{ github.repository_owner }}/${{ github.repository#*/ }}/pulls/$PR_NUMBER/merge
+            https://api.github.com/repos/${{ github.repository_owner }}/cdci-test/pulls/$PR_NUMBER/merge
 
       - name: Wait for the pull request to be merged
         run: |
