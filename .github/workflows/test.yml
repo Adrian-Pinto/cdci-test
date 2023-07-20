@@ -29,7 +29,7 @@ jobs:
 
       - name: Create a temporary branch for the pull request
         run: |
-          git checkout -b temp-branch ${{ github.event.pull_request.head.sha }}
+          git checkout -b temp-branch ${{ github.sha }}
 
       - name: Remove the file
         run: |
