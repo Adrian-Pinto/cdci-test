@@ -4,7 +4,7 @@ name: Deploy v3
 on:
   push:
     branches:
-      - main
+      - develop
 
 jobs:
   build:
