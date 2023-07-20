@@ -23,14 +23,13 @@ jobs:
             exit 0
           fi
 
-      - name: Fetch the 'develop' branch reference
-        run: git fetch origin develop:refs/remotes/origin/develop
-
       - name: Checkout the repository
         uses: actions/checkout@v3
         with:
           repository: ${{ github.repository }}
 
+      - name: Fetch the 'develop' branch reference
+        run: git fetch origin develop:refs/remotes/origin/develop
 
       - name: Create a temporary branch for the pull request
         run: |
