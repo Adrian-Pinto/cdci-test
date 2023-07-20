@@ -1,14 +1,35 @@
-name: Hello, World!
+name: Remove File on Pull Request
 
 on:
-  push:
-    branches:
-      - develop
+  pull_request:
+    types: [opened]
 
 jobs:
-  hello_world_job:
-    runs-on: ubuntu-latest
+  remove_file:
+    runs-on: alpine
 
     steps:
-      - name: Say Hello, World!
-        run: echo "Hello, World!"
+      - name: Check if the base branch is 'master' and the head branch is 'develop'
+        run: |
+          if [[ "${{ github.event.pull_request.base.ref }}" == "master" && "${{ github.event.pull_request.head.ref }}" == "develop" ]]; then
+            echo "Base branch is 'master', and head branch is 'develop'. Proceeding with the workflow..."
+          else
+            echo "This pull request does not match the specified branches. Skipping the workflow."
+            exit 0
+          fi
+
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+
+      - name: Create a temporary branch for the pull request
+        run: |
+          git fetch origin ${{ github.event.pull_request.head.ref }}:${{ github.event.pull_request.head.ref }}
+          git checkout ${{ github.event.pull_request.head.ref }}
+
+      - name: Remove the file
+        run: |
+          git rm .github/workflows/deploy.yml
+          git commit -m "Clear deploy file" --no-verify
+
+      - name: Push changes to the temporary branch
+        run: git push origin ${{ github.event.pull_request.head.ref }}
