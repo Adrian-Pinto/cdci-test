@@ -50,10 +50,14 @@ jobs:
         run: |
           REPO_OWNER=${{ github.repository_owner }}
           YOUR_BRANCH="temp-branch"
-          PR_URL=$(curl -X POST \
+          PR_RESPONSE=$(curl -X POST \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             -d "{\"title\": \"Automated Pull Request\", \"head\": \"$REPO_OWNER:$YOUR_BRANCH\", \"base\": \"main\", \"body\": \"This is an automated pull request created by GitHub Actions.\"}" \
-            https://api.github.com/repos/$REPO_OWNER/$GITHUB_REPOSITORY/pulls | jq -r '.html_url')
+            https://api.github.com/repos/$REPO_OWNER/$GITHUB_REPOSITORY/pulls)
+          
+          echo "PR_RESPONSE: $PR_RESPONSE"  # Debug print to inspect the response
+
+          PR_URL=$(echo $PR_RESPONSE | jq -r '.html_url')
 
           echo "PR_URL: $PR_URL"
           echo "::set-output name=pr_url::$PR_URL"
