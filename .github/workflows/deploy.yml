@@ -22,8 +22,8 @@ jobs:
       
       - name: Change dir
         run: |
-        cd dir/name
-        ls -la
+          cd dir/name
+          ls -la
 
       - name: log dir
         run: ls -la
