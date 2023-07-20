@@ -56,10 +56,8 @@ jobs:
           echo "::set-output name=pr_url::$PR_URL"
 
       - name: Wait for Pull Request Checks
-        uses: softprops/action-gh-wait@v1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          check_name: "Continuous Integration"  # Replace with the name of your CI check
+        run: |
+          sleep 15 # Wait for 10 seconds to give GitHub time to process the pull request
 
       - name: Merge Pull Request
         if: steps.create_pr.outputs.pr_url != ''
