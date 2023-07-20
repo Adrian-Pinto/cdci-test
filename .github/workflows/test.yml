@@ -50,7 +50,7 @@ jobs:
         run: |
           PR_URL=$(curl -X POST \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            -d '{"title": "Automated Pull Request", "head": "${{ github.repository_owner }}:temp-branch", "base": "${{ github.event.pull_request.head.ref }}", "body": "This is an automated pull request created by GitHub Actions."}' \
+            -d '{"title": "Automated Pull Request", "head": "${{ github.repository_owner }}:temp-branch", "base": "main", "body": "This is an automated pull request created by GitHub Actions."}' \
             https://api.github.com/repos/${{ github.repository_owner }}/cdci-test/pulls | jq -r '.html_url')
 
           echo "::set-output name=pr_url::$PR_URL"
@@ -72,7 +72,7 @@ jobs:
         run: |
           sleep 10 # Wait for 10 seconds to give GitHub time to process the pull request
 
-      - name: Delete the temporary branch
-        run: |
-          curl -X DELETE -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-          "https://api.github.com/repos/${{ github.repository }}/git/refs/heads/temp-branch"
+#      - name: Delete the temporary branch
+#        run: |
+#          curl -X DELETE -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+#          "https://api.github.com/repos/${{ github.repository }}/git/refs/heads/temp-branch"
