@@ -24,17 +24,36 @@ jobs:
           fi
 
       - name: Checkout the repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+
 
       - name: Create a temporary branch for the pull request
         run: |
-          git fetch origin ${{ github.event.pull_request.head.ref }}:${{ github.event.pull_request.head.ref }}
-          git checkout ${{ github.event.pull_request.head.ref }}
+          git checkout -b temp-branch ${{ github.event.pull_request.head.sha }}
 
       - name: Remove the file
         run: |
           git rm .github/workflows/deploy.yml
+          git rm .github/workflows/test.yml
           git commit -m "Clear deploy file" --no-verify
 
       - name: Push changes to the temporary branch
-        run: git push origin ${{ github.event.pull_request.head.ref }}
+        run: git push origin temp-branch
+
+      - name: Create the pull request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: temp-branch
+          title: "Remove file_to_remove.txt"
+          body: "This pull request removes file_to_remove.txt from the master branch."
+          labels: "automerge"
+
+      - name: Wait for the pull request to be merged
+        run: |
+          sleep 10 # Wait for 10 seconds to give GitHub time to process the pull request
+
+      - name: Delete the temporary branch
+        run: |
+          curl -X DELETE -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+          "https://api.github.com/repos/${{ github.repository }}/git/refs/heads/temp-branch"
