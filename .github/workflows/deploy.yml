@@ -16,14 +16,13 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
   
+    defaults:
+      run:
+        working-directory: ./dir/name
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      
-      - name: Change dir
-        run: |
-          cd dir/name
-          ls -la
 
       - name: log dir
         run: ls -la
