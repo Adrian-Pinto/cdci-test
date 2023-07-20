@@ -6,7 +6,7 @@ on:
 
 jobs:
   remove_file:
-    runs-on: alpine
+    runs-on: ubuntu-latest
 
     steps:
       - name: Check if the base branch is 'master' and the head branch is 'develop'
