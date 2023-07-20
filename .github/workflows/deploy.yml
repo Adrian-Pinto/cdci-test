@@ -35,14 +35,17 @@ jobs:
       - name: Install pnpm
         run: npm install -g pnpm
 
-      - name: log dir
-        run: ls -la
-
       - name: Install dependencies
         run: pnpm install
 
       - name: Build the React app
         run: pnpm run build
+
+      - name: log dir
+        run: ls -la .
+
+      - name: log dir
+        run: ls -la
 
       - name: Upload production-ready build files
         uses: actions/upload-artifact@v3
