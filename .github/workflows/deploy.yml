@@ -1,0 +1,77 @@
+# Simple workflow for deploying static content to GitHub Pages
+name: Deploy v3
+
+#on:
+#  pull_request:
+#    types: [closed]
+#    branches: 
+#      - develop
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+  
+    defaults:
+      run:
+        working-directory: ./dir/name
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: log dir
+        run: ls -la
+
+      - name: Set up Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build the React app
+        run: pnpm run build
+
+      - name: log dir
+        run: ls -la .
+
+      - name: log dir
+        run: ls -la
+
+      - name: Upload production-ready build files
+        uses: actions/upload-artifact@v3
+        with:
+          name: production-files
+          path: ./dir/name/dist
+
+  deploy:
+    name: Deploy
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop'
+
+    defaults:
+      run:
+        working-directory: ./dir/name
+
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: production-files
+          path: ./dir/name/dist
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dir/name/dist
